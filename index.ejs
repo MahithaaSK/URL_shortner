@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shrinker</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="my-4">URL Shrinker</h1>
+    <form action="/shortUrls" method="POST" class="my-4 form-inline">
+      <input required placeholder="Enter URL" type="url" name="fullUrl" class="form-control col-md-8 mr-2">
+      <button class="btn btn-success" type="submit">Shrink</button>
+    </form>
+
+    <table class="table table-striped mt-4">
+      <thead>
+        <tr>
+          <th>Full URL</th>
+          <th>Short URL</th>
+          <th>Clicks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% shortUrls.forEach(shortUrl => { %>
+          <tr>
+            <td><a href="<%= shortUrl.full %>"><%= shortUrl.full %></a></td>
+            <td><a href="/<%= shortUrl.short %>"><%= shortUrl.short %></a></td>
+            <td><%= shortUrl.clicks %></td>
+            <td>
+              <form action="/delete/<%= shortUrl._id %>" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+              <button onclick="copyToClipboard('<%= shortUrl.short %>')" class="btn btn-info btn-sm">Copy</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function copyToClipboard(shortUrl) {
+      const fullShortUrl = `${window.location.origin}/${shortUrl}`;
+      navigator.clipboard.writeText(fullShortUrl)
+        .then(() => alert('Short URL copied to clipboard!'))
+        .catch(() => alert('Failed to copy URL.'));
+    }
+  </script>
+</body>
+</html>
